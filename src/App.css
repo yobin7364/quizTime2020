@@ -111,16 +111,18 @@ h1 button {
   justify-content: center;
   height: 100%;
   width: 100%;
-  background: #fff;
+  color:white;
 }
 
 .inner-card-front {
   transform: rotateX(0deg);
   z-index: 2;
+  background: #cec111;
 }
 
 .inner-card-back {
   transform: rotateX(180deg);
+  background-color:#73a575;
 }
 
 .inner-card-front::after,
