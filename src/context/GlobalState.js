@@ -31,10 +31,18 @@ export const GlobalProvider = ({ children }) => {
         });
     }
 
+    const editQuestion = (questionData) => {
+        dispatch({
+            type: "EDIT_CARD",
+            payload: questionData
+        })
+    }
+
     return (<GlobalContext.Provider value={{
         cardDatas: state.cardDatas,
         addQuestion,
-        deleteQuestion
+        deleteQuestion,
+        editQuestion
     }}>
 
         {children}

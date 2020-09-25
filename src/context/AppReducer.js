@@ -10,6 +10,19 @@ export default (state, action) => {
                 ...state,
                 cardDatas: state.cardDatas.filter(cardDatas => cardDatas.id !== action.payload)
             };
+        case 'EDIT_CARD':
+            return {
+                ...state,
+                cardDatas: state.cardDatas.map(item => {
+                    if (item.id === action.payload.id) {
+                        return action.payload;
+                    }
+                    else {
+                        return item;
+                    }
+                }
+                )
+            };
         default:
             return state;
     }

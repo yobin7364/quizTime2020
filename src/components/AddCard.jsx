@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from '../context/GlobalState';
 
-export const AddCard = () => {
+export const AddCard = (props) => {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
-    const { addQuestion, cardDatas } = useContext(GlobalContext);
+    const { addQuestion, cardDatas, editQuestion } = useContext(GlobalContext);
 
     const [newQuestion, setNewQuestion] = useState(false);
 
@@ -14,17 +14,31 @@ export const AddCard = () => {
 
     const closeAddCard = () => {
         setNewQuestion(false);
+        props.resetEditQuestion();
     }
 
     const submit = (e) => {
         e.preventDefault();
-        const newCardData = {
-            id: Math.floor(Math.random() * 100000000),
-            question,
-            answer
-        };
+        if (props.canEditQuestion) {
+            const editedCardData = {
+                id: props.presentQuestion.id,
+                question,
+                answer
+            };
+            editQuestion(editedCardData);
+            props.resetEditQuestion();
+        }
 
-        addQuestion(newCardData);
+        else {
+            const newCardData = {
+                id: Math.floor(Math.random() * 100000000),
+                question,
+                answer
+            };
+
+            addQuestion(newCardData);
+        }
+
         setAnswer('');
         setQuestion('');
     }
@@ -33,23 +47,36 @@ export const AddCard = () => {
         if (cardDatas.length === 0) {
             setNewQuestion(true);
         }
-    });
+
+        if (props.presentQuestion?.question) {
+            setQuestion(props.presentQuestion.question);
+            setAnswer(props.presentQuestion.answer);
+        }
+
+        return () => {
+            setAnswer('');
+            setQuestion('');
+        }
+    }, [cardDatas, props.presentQuestion?.question, props.presentQuestion?.answer]);
 
     return (
         <>
             <h1>
                 Memory Cards
                 <button className="btn btn-small" onClick={showAddCard}>
-                    <i className="fas fa-plus"></i> Add New Card
+                    <i className="fas fa-plus"></i> {props.canEditQuestion ? "Edit Card" : "Add New Card"}
                 </button>
             </h1>
 
-            <form className={newQuestion ? "add-container show" : "add-container"} onSubmit={submit}>
+            <form className={newQuestion || props.canEditQuestion ? "add-container show" : "add-container"} onSubmit={submit}>
                 <h1>
-                    Add New Card
-                    <button type="button" className="btn btn-small btn-ghost" onClick={closeAddCard}>
-                        <i className="fas fa-times"></i>
-                    </button>
+                    {props.canEditQuestion ? "Edit Card" : "Add New Card"}
+
+                    {cardDatas.length === 0 ? null :
+                        <button type="button" className="btn btn-small btn-ghost" onClick={closeAddCard}>
+                            <i className="fas fa-times"></i>
+                        </button>
+                    }
                 </h1>
 
                 <div className="form-group">
@@ -63,7 +90,13 @@ export const AddCard = () => {
                 </div>
 
                 <button className="btn" type="submit">
-                    <i className="fas fa-plus"></i> Add Card
+                    {props.canEditQuestion ? <><i className="fas fa-edit mr-1"></i>Edit Card </>
+                        :
+                        <>
+                            <i className="fas fa-plus mr-1"></i>
+                     Add Card
+                     </>
+                    }
                 </button>
             </form>
         </>

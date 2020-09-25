@@ -55,6 +55,12 @@ h1 button {
   left: 30px;
 }
 
+.edit{
+  position: absolute;
+  bottom: 30px;
+  left: 156px;
+}
+
 .cards {
   perspective: 1000px;
   position: relative;
